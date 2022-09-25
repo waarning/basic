@@ -1,0 +1,213 @@
+// David Neundorfer
+// 
+
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.IO;
+
+namespace Final
+{
+    public partial class Form1 : Form
+    {
+        int[] lineCount = { 0, 0 };
+        string inputFile;
+        StreamWriter outputFile;
+        StreamReader fileTogether;
+        string[,] PopulatedArray = new string[,] { };
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void btnCalc_Click(object sender, EventArgs e)
+        {
+            inputFile = getFileNameWithDialog();
+            fileTogether = readFile(inputFile);
+
+            lineCount = countLinesAndCols(fileTogether);
+            fileTogether = readFile(inputFile);
+            IntoArrayandListBox(fileTogether, lineCount[0], lineCount[1]);
+
+            
+
+        }
+
+
+        private void btnOut_Click(object sender, EventArgs e)
+        {
+           // inputFile = getFileNameWithDialog();
+            fileTogether = readFile(inputFile);
+
+            lineCount = countLinesAndCols(fileTogether);
+            fileTogether = readFile(inputFile);
+            string[,] array = IntoArrayandListBox(fileTogether, lineCount[0], lineCount[1]);
+            write(array, lineCount[0], lineCount[1]);
+
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            clearAll();
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            exit();
+        }
+
+
+        // getsfile
+        private String getFileNameWithDialog()
+        {
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                return (openFileDialog1.FileName.ToString());
+            }
+            else
+            {
+                return ("error getting file");
+            }
+
+        }
+
+        // opens file
+        private StreamReader readFile(string filename)
+        {
+            StreamReader inputFile;
+            inputFile = File.OpenText(filename);
+            return inputFile;
+        }
+
+        // counts lines and width for the file, adds count to label
+        private int[] countLinesAndCols(StreamReader fileName)
+        {
+            
+            int[] lineCol = { 0, 0 };
+            string splitter;
+            char split = ' ';
+
+            while (!fileName.EndOfStream)
+            {
+                splitter = fileName.ReadLine();
+                if (lineCol[1] <= (splitter.Split(split).Length - 1))
+                {
+                    lineCol[1] = splitter.Split(split).Length - 1;
+                }
+
+                lineCol[0] = lineCol[0] + 1;
+
+
+            }
+
+            lineCol[1] = lineCol[1] + 1;
+
+            fileName.Close();
+
+            int totalAMT = lineCol[0]* lineCol[1];
+            label1.Text = "There are: " + totalAMT + " numbers in the file";
+
+            return lineCol;
+        }
+
+        // adds everything into array
+        private string[,] IntoArrayandListBox(StreamReader inputFileName, int Rows, int Columns)
+        {
+            string[,] ReadArray = new string[Rows, Columns];
+            string presplit = "";
+            char split = ' ';
+            string[] postsplit = new string[Columns];
+
+            while (!inputFileName.EndOfStream)
+            {
+                for (int row = 0; row < Rows; row++)
+                {
+                    presplit = inputFileName.ReadLine();
+                    postsplit = presplit.Split(split);
+
+                    for (int col = 0; col < Columns; col++)
+                    {
+
+                        ReadArray[row, col] = postsplit[col];
+                        lstOutput.Items.Add(ReadArray[row, col]);
+
+                    }
+                }
+            }
+
+            inputFileName.Close();
+            lstError.Items.Add("File Read.");
+            return ReadArray;
+        }
+
+        // writes to file
+        private void write(string[,] array, int row, int col)
+        {
+            StreamWriter outputFile;
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                outputFile = File.CreateText(saveFileDialog1.FileName);
+                {
+                    int numofRec = row * col;
+
+
+
+                    outputFile.WriteLine("Number of Records: " + numofRec.ToString() + "\n" + "Average: " + "\n");
+
+                    if (numofRec < 20)
+                    {
+                        outputFile.WriteLine(" There are not many grades");
+                    }
+                    else if (numofRec > 20)
+                    {
+                        outputFile.WriteLine(" There are plenty of grades");
+                    }
+                        lstError.Items.Add("Outputted user data successfully");
+
+
+
+
+
+                }
+                outputFile.Close();
+               
+
+            }
+            else
+            {
+                
+                lstError.Items.Add("Saving file operation cancelled");
+            }
+
+
+
+        }
+
+        // clears
+        private void clearAll()
+        {
+            lstError.Items.Clear();
+            inputFile = null;
+            Array.Clear(lineCount, 0, lineCount.Length);
+            lstOutput.Items.Clear();
+        }
+
+        // exits
+        private void exit()
+        {
+            this.Close();
+        }
+
+
+    }
+}
