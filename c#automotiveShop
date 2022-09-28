@@ -1,0 +1,231 @@
+
+// David Neundorfer
+// This program calculates charges for an automotive shop
+// 
+
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Chapter_6_Shop
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+
+
+        }
+
+
+        //Methods 
+        private double oilLubeCharges()
+        {
+            // charges for first category
+            double costGrpOne;
+            costGrpOne = 0;
+
+            if (chkOil.Checked)
+            {
+                costGrpOne = costGrpOne + 26;
+                
+            }
+            if (chkLube.Checked)
+            {
+                costGrpOne = costGrpOne + 18;
+            }
+            
+            return costGrpOne;
+        }
+
+
+        private double flushCharges()
+        {
+            // charges for second
+            double costGrpTwo;
+            costGrpTwo = 0;
+            if (chkTransmission.Checked)
+            {
+                costGrpTwo = costGrpTwo + 80;
+            }
+            if (chkRadiator.Checked)
+            {
+                costGrpTwo = costGrpTwo + 30;
+            }
+            
+            return costGrpTwo;
+        
+        }
+
+
+        private double miscCharges()
+        {
+            // third category charges
+            double costGrpThree;
+            costGrpThree = 0;
+
+            if (chkInspection.Checked)
+            {
+                costGrpThree = costGrpThree + 15;
+            }
+            if (chkMuffler.Checked)
+            {
+                costGrpThree = costGrpThree + 100;
+            }
+            if (chkTireRotation.Checked)
+            {
+                costGrpThree = costGrpThree + 20;
+            }
+
+            return costGrpThree;
+
+        }
+
+        private double otherCharges() 
+        {       
+            // Charges for parts and labor
+            double parts = double.Parse(txtParts.Text);
+            double labor = double.Parse(txtLabor.Text);
+
+
+            double sumOther;
+            if (parts >= 0 && labor >=0)
+            {
+                sumOther = parts + labor;
+                return sumOther;
+            }
+            else
+            {
+                MessageBox.Show("Enter positive numbers in the text fields");
+            }
+
+            sumOther = parts + labor;
+            return sumOther;
+        }
+
+        private double taxCharges() 
+        {
+            // tax charges
+            try
+            {
+                double partsTax = .06 * double.Parse(txtParts.Text);
+                return partsTax;
+
+            }
+            catch
+            {
+               
+                return 0;
+            } 
+        }
+
+        private double totalCharges()
+        {
+            // adds all charges
+            double total;
+            total = oilLubeCharges() + flushCharges() + miscCharges() + otherCharges() + taxCharges();
+            return total;
+        }
+
+        // clears
+        private void clearOilLube()
+        {
+            chkLube.Checked = false;
+            chkOil.Checked = false;
+        }
+
+
+        private void clearFlushes()
+        {
+            chkRadiator.Checked = false;
+            chkTransmission.Checked = false;
+        }
+
+        private void clearMisc()
+        {
+            chkTireRotation.Checked = false;
+            chkMuffler.Checked = false;
+            chkInspection.Checked = false;
+        }
+
+        private void clearOther()
+        {
+            txtLabor.Text = "";
+            txtParts.Text = "";
+        }
+
+        private void clearFees()
+        {
+            lblParts.Text = "";
+            lblServiceLabor.Text = "";
+            lblTax.Text = "";
+            lblTotalFees.Text = "";
+        }
+
+
+
+
+        //========================================================================================================================================================================================
+
+
+
+
+        private void btnCalc_Click(object sender, EventArgs e)
+        {
+            double servAndLabor;
+            servAndLabor = servAndLabor = (oilLubeCharges() + flushCharges() + miscCharges());
+            try
+            {
+                servAndLabor = (servAndLabor + double.Parse(txtLabor.Text));
+            }
+            catch
+            {
+                MessageBox.Show("Enter digits");
+            }
+            lblServiceLabor.Text = servAndLabor.ToString("c");
+            try
+            {
+                lblParts.Text = double.Parse(txtParts.Text).ToString("c");
+            }
+            catch
+            {
+                MessageBox.Show("Enter digits");
+            }
+            double taxes;
+            taxes = taxCharges();
+            lblTax.Text = taxes.ToString("c");
+            lblTotalFees.Text = totalCharges().ToString("c");
+        }
+
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            //clears all
+            clearOilLube();
+            clearFlushes();
+            clearMisc();
+            clearOther();
+            clearFees();
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            //exit
+            this.Close();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            txtParts.Text = "0";
+            txtLabor.Text = "0";
+        }
+    }
+}
