@@ -1,2 +1,3 @@
 # These are my personal Python/Visual Studio C# projects
-Zipped folders are Visual Studio C# 
+c# are my projects using Visual Studio c# .NET
+
