@@ -4,12 +4,10 @@
 # David Neundorfer
 # 10/29/2020
 
-# Welcome function
 def Welcome():
     print("Welcome! Here is a public service announcement from the World Health Organization")
     print()
     print()
-
     
 # A function that validates user input
 def validateInput():
@@ -40,11 +38,12 @@ def definitions(x):
 # Main function that calls to other functions and repeats
 def main():
     q=1
+    Welcome()
     while q==1:
-        Welcome()
         val_inp = validateInput()
         definitions(val_inp)
         print()
+    q+=1
 
 
 main()
